@@ -69,7 +69,7 @@ public class MyArrayList {
         if (nextEmptyIndex >= size) {
             elems = Arrays.copyOf(elems, size * 2);
             size *= 2;
-        } else if (nextEmptyIndex < size/4 && nextEmptyIndex > 0) {
+        } else if (nextEmptyIndex < size/4 && size >= 20) {
             elems = Arrays.copyOf(elems, size / 2);
             size /= 2;
         }
