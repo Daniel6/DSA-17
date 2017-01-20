@@ -66,11 +66,11 @@ Click OK. A new window should open. IntelliJ needs you to specify a place for it
 
 ## Assignment Checklist
 
-- [ ] Git is installed.
-- [ ] I've forked the DSA-17 repository using [these](./GitSetup.md) instructions
-- [ ] I've added the DSA-17 repository as an upstream remote
-- [ ] IntelliJ is installed and I've run `HelloWorld.java`
-- [ ] **Optional** I've familiarized myself with the debugger.
-- [ ] **Optional** I've completed 10 levels of the [Git tutorial](http://learngitbranching.js.org/)
-- [ ] I've joined our channel `#dsa-17` on Slack.
-- [ ] I've filled out [this](https://goo.gl/forms/JZcEDseDYbJK1SEC2) Google form.
+- [x] Git is installed.
+- [x] I've forked the DSA-17 repository using [these](./GitSetup.md) instructions
+- [x] I've added the DSA-17 repository as an upstream remote
+- [x] IntelliJ is installed and I've run `HelloWorld.java`
+- [x] **Optional** I've familiarized myself with the debugger.
+- [x] **Optional** I've completed 10 levels of the [Git tutorial](http://learngitbranching.js.org/)
+- [x] I've joined our channel `#dsa-17` on Slack.
+- [x] I've filled out [this](https://goo.gl/forms/JZcEDseDYbJK1SEC2) Google form.
