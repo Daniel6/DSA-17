@@ -1,21 +1,21 @@
 import java.util.Arrays;
 
-public class MyArrayList {
-    private Cow[] elems;
+public class MyArrayList<T> {
+    private T[] elems;
 	private int size;
 	private int nextEmptyIndex = 0;
 
 	public MyArrayList() {
 		size = 10;
-		elems = new Cow[10];
+		elems = (T[]) new Object[10];
 	}
 
 	public MyArrayList(int capacity) {
 		size = capacity;
-		elems = new Cow[capacity];
+		elems = (T[]) new Object[capacity];
 	}
 
-	public void add(Cow c) {
+	public void add(T c) {
 		elems[nextEmptyIndex] = c;
 		nextEmptyIndex++;
 		resize();
@@ -26,7 +26,7 @@ public class MyArrayList {
 		return nextEmptyIndex;
 	}
 
-	public Cow get(int index) {
+	public T get(int index) {
 		if (index >= nextEmptyIndex) {
 			throw new IndexOutOfBoundsException("No cow at that index");
 		} else {
@@ -34,8 +34,8 @@ public class MyArrayList {
 		}
 	}
 
-	public Cow remove(int index) {
-		Cow removedCow = elems[index];
+	public T remove(int index) {
+		T removedCow = elems[index];
 		for (int i = index; i < nextEmptyIndex; i++) {
             elems[i] = elems[i + 1];
         }
@@ -45,7 +45,7 @@ public class MyArrayList {
 		return removedCow;
 	}
 
-	public void add(int index, Cow c) {
+	public void add(int index, T c) {
 	    // You can only insert cows in between indices containing cows.
         if (index >= nextEmptyIndex) {
             throw new IndexOutOfBoundsException("Cannot insert cow between non-cow indices");
