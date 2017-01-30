@@ -77,7 +77,7 @@ You will be expected to follow the Honor Code while doing work for this class.
 - LinearMaps
 - Hashmaps
 
-#### Weeks 5-6: Search Engine Project
+#### Weeks 4-5: Search Engine Project
 
 #### Week 6: Sorting
 - Bubble sort
@@ -100,11 +100,11 @@ You will be expected to follow the Honor Code while doing work for this class.
 
 #### Weeks 12-13: Dynamic Programming and Greedy Algorithms
 
-#### Weeks 14-15: Challenge Problems and Applications
+#### Weeks 14: Challenge Problems and Applications
 
 
 
-For the first five weeks, we will focus on some basic data structures and their implementation in Java, as well as how they can be used in programming interview questions and puzzles. You will apply these data structures in the first mini-project: a wikipedia search engine.
+For the first six weeks, we will focus on some basic data structures and their implementation in Java, as well as how they can be used in programming interview questions and puzzles. You will apply these data structures in the first mini-project: a wikipedia search engine.
 
 We will then study five sorting algorithms, before moving on to looking at the Tree and Graph data structures, as well as more specific algorithms associated with them. Then we’ll look at two very specific types of algorithms: Greedy and Dynamic Programming, both of which are very interesting paradigms of thought.
 

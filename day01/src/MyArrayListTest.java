@@ -51,7 +51,7 @@ public class MyArrayListTest {
 
 	@Test
 	public void testResize(){
-		MyArrayList resizeCows = new MyArrayList(1000);
+		MyArrayList resizeCows = new MyArrayList();
 		for (int i = 0; i < 1000; i++) {
 			String name = "Cow" + i;
 			int age = i;
