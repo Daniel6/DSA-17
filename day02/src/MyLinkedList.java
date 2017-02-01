@@ -91,25 +91,41 @@ public class MyLinkedList<T> {
 		    currNode = currNode.next;
         }
 
-        currNode.prev.next = currNode.next;
-		currNode.next.prev = currNode.prev;
+        if (currNode.prev != null) {
+			currNode.prev.next = currNode.next;
+		}
+
+		if (currNode.next != null) {
+			currNode.next.prev = currNode.prev;
+		}
+
 		size--;
 		return currNode.val;
 	}
 
 	public T removeFirst() {
-	    T oldHead = head.val;
-		head = head.next;
-		head.prev = null;
-		size--;
-        return oldHead;
+		if (head != null) {
+			T oldHead = head.val;
+			head = head.next;
+			if (head != null) {
+				head.prev = null;
+			}
+			size--;
+			return oldHead;
+		}
+		return null;
 	}
 
 	public T removeLast() {
-		T oldTail = tail.val;
-		tail = tail.prev;
-		tail.next = null;
-		size--;
-		return oldTail;
+		if (tail != null) {
+			T oldTail = tail.val;
+			tail = tail.prev;
+			if (tail != null) {
+				tail.next = null;
+			}
+			size--;
+			return oldTail;
+		}
+		return null;
 	}
 }
