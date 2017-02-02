@@ -30,13 +30,13 @@ public class PsetTest {
 
         StackADT<Integer> r = PsetProblems.sortStackLimitedMemory(s);
 
-        assertThat(r.pop(), is(19));
-        assertThat(r.pop(), is(7));
-        assertThat(r.pop(), is(6));
-        assertThat(r.pop(), is(4));
-        assertThat(r.pop(), is(2));
-        assertThat(r.pop(), is(2));
         assertThat(r.pop(), is(1));
+        assertThat(r.pop(), is(2));
+        assertThat(r.pop(), is(2));
+        assertThat(r.pop(), is(4));
+        assertThat(r.pop(), is(6));
+        assertThat(r.pop(), is(7));
+        assertThat(r.pop(), is(19));
     }
 
 }
