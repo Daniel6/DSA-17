@@ -28,27 +28,18 @@ public class PsetProblems {
         return max*2;
     }
 
-    /*
-    [ 312
-    [
-     */
     public static StackADT<Integer> sortStackLimitedMemory(StackADT<Integer> s) {
         Stack<Integer> myStack = new Stack<>();
         while (!s.isEmpty()) { // O(n)
-            myStack.push(s.pop());
-        }
-        while(!myStack.isEmpty()) { // (O(n)
-            ListIterator<Integer> iterator = myStack.listIterator();
-            Integer max = myStack.peek();
-
-            while(iterator.hasNext()) { // O(n)
-                Integer e = iterator.next();
-                if (e.compareTo(max) >= 0) {
-                    max = e;
-                }
+            Integer e = s.pop();
+            while (!myStack.isEmpty() && myStack.peek() > e) { // O(n)
+                s.push(myStack.pop());
             }
-            myStack.remove(max); // (O(n)
-            s.push(max);
+            myStack.push(e);
+        }
+
+        while (!myStack.isEmpty()) { // O(n)
+            s.push(myStack.pop());
         }
 
         return s;
