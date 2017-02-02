@@ -2,6 +2,8 @@ package your_code;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
+
 import ADTs.StackADT;
 
 /**
@@ -10,21 +12,23 @@ import ADTs.StackADT;
 public class MyStack implements StackADT<Integer> {
 
     private LinkedList<Integer> myLinkedList;
-    private MyStack maxElementStack;
+    private LinkedList<Integer> maxElementStack;
 
     public MyStack() {
         myLinkedList = new LinkedList();
-        maxElementStack = new MyStack();
+        maxElementStack = new LinkedList();
     }
 
     public MyStack(Collection<Integer> elements) {
-        myLinkedList = new LinkedList(elements);
-        maxElementStack = new MyStack();
+        this();
+        for (Integer e : elements) {
+            push(e);
+        }
     }
 
     @Override
     public void push(Integer e) {
-        if (e.compareTo(maxElementStack.peek()) >= 0) {
+        if (isEmpty() || e.compareTo(maxElementStack.peek()) >= 0) {
             maxElementStack.push(e);
         }
         myLinkedList.push(e);
@@ -32,10 +36,14 @@ public class MyStack implements StackADT<Integer> {
 
     @Override
     public Integer pop() {
-        if (myLinkedList.peek().compareTo(maxElementStack.peek()) == 0) {
-            maxElementStack.pop();
+        if (isEmpty()) {
+            throw new NoSuchElementException();
+        } else {
+            if (myLinkedList.peek().compareTo(maxElementStack.peek()) == 0) {
+                maxElementStack.pop();
+            }
+            return myLinkedList.pop();
         }
-        return myLinkedList.pop();
     }
 
     @Override

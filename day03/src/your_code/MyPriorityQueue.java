@@ -3,6 +3,7 @@ package your_code;
 import sun.awt.image.ImageWatched;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
@@ -11,28 +12,13 @@ import java.util.NoSuchElementException;
  */
 public class MyPriorityQueue extends MyQueue {
 
-    private LinkedList<Integer> maxElementStack;
-
-    public MyPriorityQueue() {
-        super();
-        maxElementStack = new LinkedList<>();
-    }
-
-    public MyPriorityQueue(Collection<Integer> elements) {
-        super(elements);
-        maxElementStack = new LinkedList<>();
-    }
-
     public void enqueue(int item) {
-        enqueue(new Integer(item));
+        this.enqueue(new Integer(item));
     }
 
     public void enqueue(Integer item) {
         if (item != null) {
-            if (!myLinkedList.isEmpty() && item.compareTo(myLinkedList.peek()) >= 0) {
-                maxElementStack.push(item);
-            }
-            myLinkedList.push(item);
+            super.enqueue(item);
         }
     }
 
@@ -44,8 +30,16 @@ public class MyPriorityQueue extends MyQueue {
         if (myLinkedList.isEmpty()) {
             throw new NoSuchElementException();
         } else {
-            myLinkedList.removeFirstOccurrence(maxElementStack.peek());
-            return maxElementStack.pop().intValue();
+            Integer max = myLinkedList.peek();
+            Iterator<Integer> iterator = myLinkedList.iterator();
+            while(iterator.hasNext()) {
+                Integer el = iterator.next();
+                if (el.compareTo(max) > 0) {
+                    max = el;
+                }
+            }
+            myLinkedList.removeFirstOccurrence(max);
+            return max.intValue();
         }
     }
 
