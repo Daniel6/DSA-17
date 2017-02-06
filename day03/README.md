@@ -10,6 +10,8 @@ After completing this homework, students will be able to:
 
 ## Assignment
 
+#### Due via check-off on Thursday night (Feb 2)
+
 ### Reading
 
 - In *Think Algorithms*, read section **10.8**. Ignore the stuff about "DFS", we'll learn about that later.
