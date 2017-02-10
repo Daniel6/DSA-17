@@ -2,6 +2,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,7 +12,8 @@ public class Index {
 	private Map<String, Set<TermCounter>> index = new HashMap<String, Set<TermCounter>>();
 
 	public void add(String term, TermCounter tc) {
-		// TODO
+		index.putIfAbsent(term, new HashSet<TermCounter>());
+		index.get(term).add(tc);
 		// if we're seeing a term for the first time, make a new Set
 		// otherwise we can add the term to an existing Set
 	}
