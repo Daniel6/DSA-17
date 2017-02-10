@@ -12,7 +12,8 @@ public class Index {
 	private Map<String, Set<TermCounter>> index = new HashMap<String, Set<TermCounter>>();
 
 	public void add(String term, TermCounter tc) {
-		// TODO
+		index.putIfAbsent(term, new HashSet<TermCounter>());
+		index.get(term).add(tc);
 		// if we're seeing a term for the first time, make a new Set
 		// otherwise we can add the term to an existing Set
 	}
