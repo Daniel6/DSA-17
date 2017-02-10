@@ -57,8 +57,8 @@ public class TermCounter {
 	}
 
 	public void put(String term, int count) {
-		map.put(term, count);
 		size += count - map.getOrDefault(term, 0);
+		map.put(term, count);
 	}
 
 	public Integer get(String term) {
