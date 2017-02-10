@@ -2,6 +2,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,16 +18,18 @@ public class Index {
 	}
 
 	public Set<TermCounter> get(String term) {
-		// TODO
-		return null;
+		return index.getOrDefault(term, null);
 	}
 
 	public void indexPage(String url, Elements paragraphs) {
 		// make a TermCounter and count the terms in the paragraphs
-		// TODO
+		TermCounter termCounter = new TermCounter(url);
+		termCounter.processElements(paragraphs);
 
 		// for each term in the TermCounter, add the TermCounter to the index
-		// TODO
+		termCounter.keySet().stream().forEach(term -> {
+			index.getOrDefault(term, new HashSet<TermCounter>()).add(termCounter);
+		});
 	}
 
 	public void printIndex() {
