@@ -45,8 +45,9 @@ public class TermCounter {
 		// replace punctuation with spaces, convert to lower case, and split on whitespace
 		String[] array = text.replaceAll("\\pP", " ").toLowerCase().split("\\s+");
 
-		// TODO
-		// increment the count for each term
+		for (int i = 0; i < array.length; i++) {
+			incrementTermCount(array[i]);
+			}
 	}
 
 	public void incrementTermCount(String term) {
