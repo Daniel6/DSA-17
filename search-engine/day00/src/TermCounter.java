@@ -11,9 +11,11 @@ public class TermCounter {
 
 	private Map<String, Integer> map;
 	private String label;
+	private int size;
 
 	public TermCounter(String label) {
 		this.label = label;
+		this.size = 0;
 		this.map = new HashMap<String, Integer>();
 	}
 
@@ -22,7 +24,7 @@ public class TermCounter {
 	}
 
 	public int size() {
-		return map.size();
+		return size;
 	}
 
 	public void processElements(Elements paragraphs) {
@@ -51,11 +53,12 @@ public class TermCounter {
 	}
 
 	public void incrementTermCount(String term) {
-		map.put(term, map.getOrDefault(term, 0) + 1);
+		put(term, map.getOrDefault(term, 0) + 1);
 	}
 
 	public void put(String term, int count) {
 		map.put(term, count);
+		size += count - map.getOrDefault(term, 0);
 	}
 
 	public Integer get(String term) {
