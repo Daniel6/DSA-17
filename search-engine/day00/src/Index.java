@@ -12,14 +12,14 @@ public class Index {
 	private Map<String, Set<TermCounter>> index = new HashMap<String, Set<TermCounter>>();
 
 	public void add(String term, TermCounter tc) {
-		index.putIfAbsent(term, new HashSet<TermCounter>());
-		index.get(term).add(tc);
 		// if we're seeing a term for the first time, make a new Set
 		// otherwise we can add the term to an existing Set
+		index.putIfAbsent(term, new HashSet<TermCounter>());
+		index.get(term).add(tc);
 	}
 
 	public Set<TermCounter> get(String term) {
-		return index.getOrDefault(term, null);
+		return index.get(term);
 	}
 
 	public void indexPage(String url, Elements paragraphs) {
@@ -29,7 +29,7 @@ public class Index {
 
 		// for each term in the TermCounter, add the TermCounter to the index
 		termCounter.keySet().stream().forEach(term -> {
-			index.getOrDefault(term, new HashSet<TermCounter>()).add(termCounter);
+			add(term, termCounter);
 		});
 	}
 

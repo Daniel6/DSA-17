@@ -62,7 +62,7 @@ public class TermCounter {
 	}
 
 	public Integer get(String term) {
-		return map.get(term);
+		return map.getOrDefault(term, 0);
 	}
 
 	public Set<String> keySet() {
