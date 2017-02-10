@@ -22,8 +22,7 @@ public class TermCounter {
 	}
 
 	public int size() {
-		// TODO
-		return 0;
+		return map.size();
 	}
 
 	public void processElements(Elements paragraphs) {
@@ -52,16 +51,15 @@ public class TermCounter {
 	}
 
 	public void incrementTermCount(String term) {
-		// TODO
+		map.put(term, map.getOrDefault(term, 0) + 1);
 	}
 
 	public void put(String term, int count) {
-		// TODO
+		map.put(term, count);
 	}
 
 	public Integer get(String term) {
-		// TODO
-		return 0;
+		map.get(term);
 	}
 
 	public Set<String> keySet() {

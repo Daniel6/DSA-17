@@ -32,13 +32,13 @@ public class MyPriorityQueue extends MyQueue {
         } else {
             Integer max = myLinkedList.peek();
             Iterator<Integer> iterator = myLinkedList.iterator();
-            while(iterator.hasNext()) {
+            while(iterator.hasNext()) { // O(n)
                 Integer el = iterator.next();
                 if (el.compareTo(max) > 0) {
                     max = el;
                 }
             }
-            myLinkedList.removeFirstOccurrence(max);
+            myLinkedList.removeFirstOccurrence(max); // O(n)
             return max.intValue();
         }
     }
