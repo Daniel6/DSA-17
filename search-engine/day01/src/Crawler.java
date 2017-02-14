@@ -3,9 +3,11 @@ import org.jsoup.select.Elements;
 import redis.clients.jedis.Jedis;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.*;
 
 public class Crawler {
 	// the index where the results go
@@ -14,12 +16,21 @@ public class Crawler {
 	// queue of URLs to be indexed
 	private Queue<String> queue = new LinkedList<>();
 
+	// pages that we have processed
+	private HashSet<String> seenPages = new HashSet<>();
+
+	// queue of page urls that are potentially fetched
+	private Queue<Future<HashSet<String>>> pendingPages = new LinkedList<>();
+
 	// fetcher used to get pages from Wikipedia
 	final static WikiFetcher wf = new WikiFetcher();
+
+	ExecutorService crawlerPool;
 
 	public Crawler(String source, Index index) {
 		this.index = index;
 		queue.offer(source);
+		this.crawlerPool = Executors.newFixedThreadPool(4);
 	}
 
 	public int queueSize() {
@@ -34,9 +45,31 @@ public class Crawler {
 	 * @throws IOException
 	 */
 	public void crawl(int limit) throws IOException {
-		queue.parallelStream().forEach(url -> {
+		while (seenPages.size() < limit) {
+			// Spawn phase
+			while(!queue.isEmpty() && seenPages.size() < limit) {
+				String url = queue.poll();
+				if (!seenPages.contains(url)) {
+					seenPages.add(url);
+					Future<HashSet<String>> pageLinks = crawlerPool.submit(new CrawlerWorker(queue.poll()));
+					pendingPages.add(pageLinks);
+				}
+			}
 
-		});
+			// Wait phase
+			while(!pendingPages.isEmpty()) {
+				Future<HashSet<String>> pageLinks = pendingPages.poll();
+				if (pageLinks.isDone()) {
+					try {
+						queue.addAll(pageLinks.get());
+					} catch (InterruptedException | ExecutionException e) {
+						e.printStackTrace();
+					}
+				} else {
+					pendingPages.add(pageLinks);
+				}
+			}
+		}
 	}
 
 	void queueInternalLinks(Elements paragraphs) {
@@ -80,5 +113,21 @@ public class Crawler {
 		// 	System.out.println(entry);
 		// }
 
+	}
+
+	private class CrawlerWorker implements Callable {
+		private String url;
+
+		public CrawlerWorker(String url) {
+			this.url = url;
+		}
+
+		@Override
+		public Object call() throws Exception {
+			HashSet<String> links = new HashSet<>();
+			// TODO: Return all links on page
+
+			return links;
+		}
 	}
 }
