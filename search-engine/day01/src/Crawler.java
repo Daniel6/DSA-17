@@ -34,7 +34,9 @@ public class Crawler {
 	 * @throws IOException
 	 */
 	public void crawl(int limit) throws IOException {
-		// TODO
+		queue.parallelStream().forEach(url -> {
+
+		});
 	}
 
 	void queueInternalLinks(Elements paragraphs) {
