@@ -1,4 +1,6 @@
 import org.jsoup.select.Elements;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Transaction;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -10,6 +12,15 @@ public class Index {
 
     // Index: map of words to URL and their counts
     private Map<String, Set<TermCounter>> index = new HashMap<String, Set<TermCounter>>();
+    private Jedis jedis;
+
+    public Index() {
+        try {
+            this.jedis = JedisMaker.make();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void add(String term, TermCounter tc) {
         // if we're seeing a term for the first time, make a new Set
@@ -27,9 +38,17 @@ public class Index {
         TermCounter termCounter = new TermCounter(url);
         termCounter.processElements(paragraphs);
 
-        // for each term in the TermCounter, add the TermCounter to the index
+        // for each term in the TermCounter, add the TermCounter to the index and store data on Redis
         termCounter.keySet().stream().forEach(term -> {
             add(term, termCounter);
+
+            Transaction t = jedis.multi();
+            String hashName = "TermCounter: " + url;
+            String urlSetKey = "urlSet: " + term;
+            int count = termCounter.get(term);
+            t.hset(hashName, term, String.valueOf(count));
+            t.sadd(urlSetKey, url);
+            t.exec();
         });
     }
 
