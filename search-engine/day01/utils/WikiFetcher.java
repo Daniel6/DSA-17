@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 
 import org.jsoup.Connection;
@@ -14,11 +15,13 @@ public class WikiFetcher {
 	private long minInterval = 1000;
 
 	public Elements fetchWikipedia(String url) throws IOException {
-		sleepIfNeeded();
+//		sleepIfNeeded();
 
         // connect to the url
 		Connection conn = Jsoup.connect(url);
-		Document doc = conn.get();
+
+        Document doc = repeatedGet(conn, 5);
+//		Document doc = conn.get();
 
 		// retrieve the portion of the html we care about
 		Element content = doc.getElementById("mw-content-text");
@@ -26,6 +29,25 @@ public class WikiFetcher {
 		Elements paras = content.select("p");
 		return paras;
 	}
+
+	/*
+	    Attempt to get a document from a connection. If the operation times out. try again.
+	    Keep trying for @param limit times. If none of the attempts succeeds, throw the timeout exception.
+	 */
+	private Document repeatedGet(Connection con, int limit) throws IOException {
+        Document doc;
+        try {
+            doc = con.get();
+            return doc;
+        } catch (SocketTimeoutException e) {
+            if (limit > 1) {
+                System.out.println("Retrying " + con);
+                return repeatedGet(con, limit - 1);
+            } else {
+                throw e;
+            }
+        }
+    }
 
 	public Elements readWikipedia(String url) throws IOException {
 		URL realURL = new URL(url);
