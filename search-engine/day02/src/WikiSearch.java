@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.net.URI;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -95,14 +96,23 @@ public class WikiSearch {
     // Performs a search and makes a WikiSearch object.
     public static WikiSearch search(String term) {
         Map<String, Integer> myMap = new HashMap<>();
+        try {
+            JedisPool jp = JedisMaker.makePool();
+            URI uri = JedisMaker.getURI();
+            try (Jedis jedis = JedisMaker.getConnection(jp, uri)) {
+                Set<String> s = jedis.smembers("urlSet: " + term);
+                s.parallelStream().forEach(url -> {
+                    try (Jedis myJed = JedisMaker.getConnection(jp, uri)) {
+                        if (myJed.exists("TermCounter: " + url)) {
+                            int count = Integer.valueOf(myJed.hget("TermCounter: " + url, term));
+                            myMap.put(url, count);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
-        try (Jedis jedis = JedisMaker.make()) {
-
-            Set<String> s = jedis.smembers("urlSet: " + term);
-            s.parallelStream().forEach(url -> {
-                int count = Integer.valueOf(jedis.hget("TermCounter: " + url, term));
-                myMap.put(url, count);
-            });
+                });
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
