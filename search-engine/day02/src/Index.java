@@ -80,21 +80,6 @@ public class Index {
         }
     }
 
-    /*
-        Attempts to execute the transaction @param limit times.
-     */
-//    private void repeatedExec(Transaction t, int limit) {
-//        try {
-//            t.exec();
-//        } catch (SocketTimeoutException e) {
-//            if (limit > 1) {
-//                repeatedExec(t, limit - 1);
-//            } else {
-//                throw e;
-//            }
-//        }
-//    }
-
     public void printIndex() {
         // loop through the search terms
         for (String term: keySet()) {
