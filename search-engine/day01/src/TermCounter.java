@@ -2,8 +2,12 @@ import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -12,6 +16,7 @@ public class TermCounter {
 	private Map<String, Integer> map;
 	private String label;
 	private int size;
+	private HashSet<String> stopwords;
 
 	public TermCounter(String label) {
 		this.label = label;
@@ -44,12 +49,33 @@ public class TermCounter {
 	}
 
 	public void processText(String text) {
+		if (stopwords == null) {
+		    stopwords = new HashSet<String>();
+			String stopwordsFile = System.getProperty("user.dir") + "/" +
+					"resources" + "/" + "stopwords.txt";
+
+			BufferedReader br;
+			try {
+				br = new BufferedReader(new FileReader(stopwordsFile));
+				while (true) {
+					String line = br.readLine();
+					if (line == null) break;
+					stopwords.add(line);
+				}
+				br.close();
+			} catch (IOException e1) {
+				System.out.println("File not found: " + stopwordsFile);
+			}
+		}
+
 		// replace punctuation with spaces, convert to lower case, and split on whitespace
 		String[] array = text.replaceAll("\\pP", " ").toLowerCase().split("\\s+");
 
 		for (int i = 0; i < array.length; i++) {
-			incrementTermCount(array[i]);
+			if (stopwords == null || !stopwords.contains(array[i])) {
+				incrementTermCount(array[i]);
 			}
+		}
 	}
 
 	public void incrementTermCount(String term) {
