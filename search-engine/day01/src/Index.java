@@ -1,8 +1,12 @@
 import org.jsoup.select.Elements;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Transaction;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -12,14 +16,34 @@ public class Index {
 
     // Index: map of words to URL and their counts
     private Map<String, Set<TermCounter>> index = new HashMap<String, Set<TermCounter>>();
-    private Jedis jedis;
+    private JedisPool jedisPool;
+    private URI uri;
 
-    public Index() {
+    public Index(JedisPool jedisPool) {
+        this.jedisPool = jedisPool;
         try {
-            this.jedis = JedisMaker.make();
+            this.uri = JedisMaker.getURI();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /*
+        @return a mapping of page to # of occurences of @param term in that page
+     */
+    public Map<String, Integer> getCounts(String term) {
+        Map<String, Integer> res = new HashMap<>();
+
+        if (index.containsKey(term)) {
+            Set<TermCounter> pagesWithWord = index.get(term);
+
+            for (TermCounter c : pagesWithWord) {
+                res.put(c.getLabel(), c.get(term));
+            }
+        }
+
+
+        return res;
     }
 
     public void add(String term, TermCounter tc) {
@@ -39,18 +63,37 @@ public class Index {
         termCounter.processElements(paragraphs);
 
         // for each term in the TermCounter, add the TermCounter to the index and store data on Redis
-        termCounter.keySet().stream().forEach(term -> {
-            add(term, termCounter);
+        try (Jedis jedis = JedisMaker.getConnection(jedisPool, uri)) {
+            termCounter.keySet().stream().forEach(term -> {
+                Transaction t = jedis.multi();
+                add(term, termCounter);
 
-            Transaction t = jedis.multi();
-            String hashName = "TermCounter: " + url;
-            String urlSetKey = "urlSet: " + term;
-            int count = termCounter.get(term);
-            t.hset(hashName, term, String.valueOf(count));
-            t.sadd(urlSetKey, url);
-            t.exec();
-        });
+                String hashName = "TermCounter: " + url;
+                String urlSetKey = "urlSet: " + term;
+                int count = termCounter.get(term);
+                t.hset(hashName, term, String.valueOf(count));
+                t.sadd(urlSetKey, url);
+                t.exec();
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
+    /*
+        Attempts to execute the transaction @param limit times.
+     */
+//    private void repeatedExec(Transaction t, int limit) {
+//        try {
+//            t.exec();
+//        } catch (SocketTimeoutException e) {
+//            if (limit > 1) {
+//                repeatedExec(t, limit - 1);
+//            } else {
+//                throw e;
+//            }
+//        }
+//    }
 
     public void printIndex() {
         // loop through the search terms
@@ -70,10 +113,10 @@ public class Index {
         return index.keySet();
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, URISyntaxException {
 
         WikiFetcher wf = new WikiFetcher();
-        Index indexer = new Index();
+        Index indexer = new Index(JedisMaker.makePool());
 
         String url = "https://en.wikipedia.org/wiki/Java_(programming_language)";
         Elements paragraphs = wf.fetchWikipedia(url);
