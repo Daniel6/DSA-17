@@ -84,7 +84,7 @@ public class WikiSearch {
 
         Stream<Entry<String,Integer>> sorted =
                 map.entrySet().stream()
-                        .sorted(Map.Entry.comparingByValue());
+                        .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()));
 
         List<Entry<String,Integer>> result = sorted.collect(Collectors.toList());
 
