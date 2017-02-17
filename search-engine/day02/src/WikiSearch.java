@@ -1,6 +1,8 @@
 import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -71,11 +73,23 @@ public class WikiSearch {
         return rel1 + rel2;
     }
 
+    public int compare( Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2 )
+    {
+        return (o1.getValue() ).compareTo(o2.getValue());
+    }
+
     // Sort the results by relevance.
     public List<Entry<String, Integer>> sort() {
-        // TODO
-        return null;
+
+        Stream<Entry<String,Integer>> sorted =
+                map.entrySet().stream()
+                        .sorted(Map.Entry.comparingByValue());
+
+        List<Entry<String,Integer>> result = sorted.collect(Collectors.toList());
+
+        return result;
     }
+
 
 
     // Performs a search and makes a WikiSearch object.
