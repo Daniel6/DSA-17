@@ -8,9 +8,101 @@ import java.net.URISyntaxException;
 import java.util.Set;
 
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Transaction;
 
 public class JedisMaker {
+
+	public static Jedis getConnection(JedisPool jp, URI uri) throws IOException {
+		Jedis j = jp.getResource();
+
+		String[] array = uri.getAuthority().split("[:@]");
+		String auth = array[1];
+
+		try {
+			j.auth(auth);
+		} catch (Exception e) {
+			throw e;
+		}
+		return j;
+	}
+
+	public static URI getURI() throws IOException {
+		// assemble the directory name
+		String slash = File.separator;
+		String filename = System.getProperty("user.dir") + slash +
+				"resources" + slash + "redis_url.txt";
+
+		System.out.println(filename);
+
+		StringBuilder sb = new StringBuilder();
+		BufferedReader br;
+		try {
+			br = new BufferedReader(new FileReader(filename));
+		} catch (FileNotFoundException e1) {
+			System.out.println("File not found: " + filename);
+			printInstructions();
+			return null;
+		}
+
+		while (true) {
+			String line = br.readLine();
+			if (line == null) break;
+			sb.append(line);
+		}
+		br.close();
+
+		URI uri;
+		try {
+			uri = new URI(sb.toString());
+		} catch (URISyntaxException e) {
+			System.out.println("Reading file: " + filename);
+			System.out.println("It looks like this file does not contain a valid URI.");
+			printInstructions();
+			return null;
+		}
+		return uri;
+	}
+
+	public static JedisPool makePool() throws IOException {
+		// assemble the directory name
+		String slash = File.separator;
+		String filename = System.getProperty("user.dir") + slash +
+				"resources" + slash + "redis_url.txt";
+
+		System.out.println(filename);
+
+		StringBuilder sb = new StringBuilder();
+		BufferedReader br;
+		try {
+			br = new BufferedReader(new FileReader(filename));
+		} catch (FileNotFoundException e1) {
+			System.out.println("File not found: " + filename);
+			printInstructions();
+			return null;
+		}
+
+		while (true) {
+			String line = br.readLine();
+			if (line == null) break;
+			sb.append(line);
+		}
+		br.close();
+
+		URI uri;
+		try {
+			uri = new URI(sb.toString());
+		} catch (URISyntaxException e) {
+			System.out.println("Reading file: " + filename);
+			System.out.println("It looks like this file does not contain a valid URI.");
+			printInstructions();
+			return null;
+		}
+		String host = uri.getHost();
+		int port = uri.getPort();
+
+		return new JedisPool(host, port);
+	}
 
 	/**
 	 * Make a Jedis object and authenticate it.
