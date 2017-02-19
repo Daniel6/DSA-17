@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -101,16 +102,28 @@ public class WikiSearch {
             URI uri = JedisMaker.getURI();
             try (Jedis jedis = JedisMaker.getConnection(jp, uri)) {
                 Set<String> s = jedis.smembers("urlSet: " + term);
+
+                // Get number of occurences of term in corpus
+                // tf-idf relevancy
+                int corpusOccurences = 1;
+                try (Jedis myJed = JedisMaker.getConnection(jp, uri)) {
+                    if (myJed.exists("CorpusCount: " + term)) {
+                        corpusOccurences = Integer.valueOf(myJed.get("CorpusCount: " + term));
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                final int finalCorpusOccurences = corpusOccurences;
                 s.parallelStream().forEach(url -> {
                     try (Jedis myJed = JedisMaker.getConnection(jp, uri)) {
                         if (myJed.exists("TermCounter: " + url)) {
-                            int count = Integer.valueOf(myJed.hget("TermCounter: " + url, term));
+                            int count = Integer.valueOf(myJed.hget("TermCounter: " + url, term)) / finalCorpusOccurences;
                             myMap.put(url, count);
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
                 });
             }
         } catch (IOException e) {
@@ -122,7 +135,11 @@ public class WikiSearch {
         return new WikiSearch(myMap);
     }
 
-    // TODO: Choose an extension and add your methods here
+    protected int totalRelevance_Multiplicative(Integer a, Integer b) {
+        return a*b;
+    }
+
+
 
     public static void main(String[] args) throws IOException {
 

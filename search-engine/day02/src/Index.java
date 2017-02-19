@@ -11,11 +11,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Index {
 
     // Index: map of words to URL and their counts
-    private Map<String, Set<TermCounter>> index = new HashMap<String, Set<TermCounter>>();
+    private ConcurrentHashMap<String, Set<TermCounter>> index = new ConcurrentHashMap<>();
     private JedisPool jedisPool;
     private URI uri;
 
@@ -63,21 +64,34 @@ public class Index {
         termCounter.processElements(paragraphs);
 
         // for each term in the TermCounter, add the TermCounter to the index and store data on Redis
-        try (Jedis jedis = JedisMaker.getConnection(jedisPool, uri)) {
-            termCounter.keySet().stream().forEach(term -> {
+        termCounter.keySet().parallelStream().forEach(term -> {
+            try {
+                Jedis jedis = JedisMaker.getConnection(jedisPool, uri);
+
+                boolean corpusExists = jedis.exists("CorpusCount: " + term);
+
                 Transaction t = jedis.multi();
                 add(term, termCounter);
+
 
                 String hashName = "TermCounter: " + url;
                 String urlSetKey = "urlSet: " + term;
                 int count = termCounter.get(term);
                 t.hset(hashName, term, String.valueOf(count));
+
+                if (corpusExists) {
+                    t.incrBy("CorpusCount: " + term, count);
+                } else {
+                    t.set("CorpusCount: " + term, Integer.toString(count));
+                }
+
                 t.sadd(urlSetKey, url);
                 t.exec();
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+                jedis.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public void printIndex() {

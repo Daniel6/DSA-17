@@ -75,6 +75,7 @@ public class Crawler {
                         queue.addAll(pageLinks.get());
                     } catch (InterruptedException | ExecutionException e) {
                         e.printStackTrace();
+                        System.exit(1);
                     }
                 } else {
                     pendingPages.add(pageLinks);
