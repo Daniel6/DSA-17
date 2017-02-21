@@ -2,12 +2,13 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+
+import java.util.Collections;
 
 public class WikiSearch {
 
@@ -85,10 +86,11 @@ public class WikiSearch {
 
         Stream<Entry<String,Integer>> sorted =
                 map.entrySet().stream()
-                        .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()));
+                        .sorted(Map.Entry.comparingByValue());
 
         List<Entry<String,Integer>> result = sorted.collect(Collectors.toList());
 
+        //return Collections.reverse(result);
         return result;
     }
 
