@@ -13,27 +13,27 @@ import java.util.Collections;
 public class WikiSearch {
 
     // map from URLs that contain the term(s) to relevance score
-    private Map<String, Integer> map;
+    private Map<String, Double> map;
 
-    public WikiSearch(Map<String, Integer> map) {
+    public WikiSearch(Map<String, Double> map) {
         this.map = map;
     }
 
-    public Integer getRelevance(String url) {
+    public Double getRelevance(String url) {
         return map.get(url);
     }
 
     // Prints the contents in order of term frequency.
     private  void print() {
-        List<Entry<String, Integer>> entries = sort();
-        for (Entry<String, Integer> entry: entries) {
+        List<Entry<String, Double>> entries = sort();
+        for (Entry<String, Double> entry: entries) {
             System.out.println(entry);
         }
     }
 
     // Computes the union of two search results.
     public WikiSearch or(WikiSearch that) {
-        Map<String, Integer> myMap = new HashMap<>();
+        Map<String, Double> myMap = new HashMap<>();
         map.entrySet().parallelStream().forEach(entry -> {
             myMap.put(entry.getKey(), totalRelevance(entry.getValue(), that.getRelevance(entry.getKey())));
         });
@@ -47,7 +47,7 @@ public class WikiSearch {
 
     // Computes the intersection of two search results.
     public WikiSearch and(WikiSearch that) {
-        Map<String, Integer> myMap = new HashMap<>();
+        Map<String, Double> myMap = new HashMap<>();
         map.entrySet().parallelStream().forEach(entry -> {
             if (that.contains(entry.getKey())) {
                 myMap.put(entry.getKey(), totalRelevance(entry.getValue(), that.getRelevance(entry.getKey())));
@@ -62,7 +62,7 @@ public class WikiSearch {
 
     // Computes the intersection of two search results.
     public WikiSearch minus(WikiSearch that) {
-        Map<String, Integer> myMap = new HashMap<>();
+        Map<String, Double> myMap = new HashMap<>();
         map.entrySet().parallelStream().forEach(entry -> {
             if (!that.contains(entry.getKey())) {
                 myMap.put(entry.getKey(), totalRelevance(entry.getValue(), that.getRelevance(entry.getKey())));
@@ -72,7 +72,7 @@ public class WikiSearch {
     }
 
     // Computes the relevance of a search with multiple terms.
-    protected int totalRelevance(Integer rel1, Integer rel2) {
+    protected double totalRelevance(Double rel1, Double rel2) {
         return rel1 + rel2;
     }
 
@@ -82,13 +82,13 @@ public class WikiSearch {
     }
 
     // Sort the results by relevance.
-    public List<Entry<String, Integer>> sort() {
+    public List<Entry<String, Double>> sort() {
 
-        Stream<Entry<String,Integer>> sorted =
+        Stream<Entry<String,Double>> sorted =
                 map.entrySet().stream()
                         .sorted(Map.Entry.comparingByValue());
 
-        List<Entry<String,Integer>> result = sorted.collect(Collectors.toList());
+        List<Entry<String,Double>> result = sorted.collect(Collectors.toList());
 
         //return Collections.reverse(result);
         return result;
@@ -98,7 +98,7 @@ public class WikiSearch {
 
     // Performs a search and makes a WikiSearch object.
     public static WikiSearch search(String term) {
-        Map<String, Integer> myMap = new HashMap<>();
+        Map<String, Double> myMap = new HashMap<>();
         try {
             JedisPool jp = JedisMaker.makePool();
             URI uri = JedisMaker.getURI();
@@ -120,7 +120,7 @@ public class WikiSearch {
                 s.parallelStream().forEach(url -> {
                     try (Jedis myJed = JedisMaker.getConnection(jp, uri)) {
                         if (myJed.exists("TermCounter: " + url)) {
-                            int count = Integer.valueOf(myJed.hget("TermCounter: " + url, term)) / finalCorpusOccurences;
+                            double count = Double.valueOf(myJed.hget("TermCounter: " + url, term)) / finalCorpusOccurences;
                             myMap.put(url, count);
                         }
                     } catch (IOException e) {

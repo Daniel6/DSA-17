@@ -50,17 +50,46 @@ public class PeakFinding {
         return maxIndex;
     }
 
-
-
     public static int findOneDPeak(int[] nums){
-    	// TODO
-        return -1;
+        int dist = nums.length/2;
+    	int index = nums.length/2;
+    	int dir = peak(index, nums);
+    	while (dir != 0) {
+    	    dist = Math.max(dist / 2, 1);
+            index += dir * dist;
+            dir = peak(index, nums);
+        }
+
+        return index;
     }
 
     public static int[] findTwoDPeak(int[][] nums){
-    	// TODO: Optionally due by 2/23. Will be due on 2/27.
-        int[] answer = {-1,-1};
+    	int dist = nums.length/2;
+    	int x = nums.length/2;
+    	int y = nums[0].length/2;
+
+    	int dirX = peakX(x, y, nums);
+    	int dirY = peakY(x, y, nums);
+
+    	while(dirX != 0 || dirY != 0) {
+    	    dist = Math.max(dist / 2, 1);
+    	    x += dirX * dist;
+    	    y += dirY * dist;
+    	    dirX = peakX(x, y, nums);
+            dirY = peakY(x, y, nums);
+        }
+//        System.out.println("dirX: " + dirX);
+//        System.out.println("dirY: " + dirY);
+//        System.out.println("x: " + x);
+//        System.out.println("y: " + y);
+        int[] answer = {y,x}; // r u kidding me
         return answer;
+    }
+
+    public static void main(String[] args) {
+        PeakFinding p = new PeakFinding();
+        int[] a = {1, 1, 1, 1, 2, 3, 1};
+        System.out.println(p.findOneDPeak(a));
     }
 
 }

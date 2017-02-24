@@ -89,6 +89,10 @@ public class Crawler {
             }
             System.out.println("Join phase duration: " + ((System.currentTimeMillis() - start) / 1000) + "s");
         }
+
+//        for (String s : seenPages) {
+//            System.out.println("Page Indexed: " + s);
+//        }
     }
 
     void queueInternalLinks(Elements paragraphs) {
@@ -113,6 +117,9 @@ public class Crawler {
     public static void main(String[] args) throws IOException {
         // make a WikiCrawler
         JedisPool jp = JedisMaker.makePool();
+
+        JedisMaker.getConnection(jp, JedisMaker.getURI()).flushAll();
+
         Index index = new Index(jp);
         String source = "https://en.wikipedia.org/wiki/Java_(programming_language)";
         Crawler wc = new Crawler(source, index);
@@ -123,7 +130,7 @@ public class Crawler {
 
         // Crawl outward starting at source
         long start = System.currentTimeMillis();
-        wc.crawl(10);
+        wc.crawl(5);
         long end = System.currentTimeMillis();
         System.out.println("Total crawl time: " + ((end - start) / 1000.0) + "s");
         jp.destroy();
@@ -131,8 +138,23 @@ public class Crawler {
         // Here is some sample code that tests your index, which assumes
         // you have written a getCounts() method in Index, which returns
         // a map from {url: count} for a given keyword
-        Map<String, Integer> map = index.getCounts("programming");
-        System.out.println("Found " + map.size() + " pages with the word 'programming'");
+        Map<String, Integer> map = index.getCounts("the");
+        System.out.println("Found " + map.size() + " pages with the word 'the'");
+        for (Map.Entry<String, Integer> entry: map.entrySet()) {
+            System.out.println(entry);
+        }
+        map = index.getCounts("java");
+        System.out.println("Found " + map.size() + " pages with the word 'java'");
+        for (Map.Entry<String, Integer> entry: map.entrySet()) {
+            System.out.println(entry);
+        }
+        map = index.getCounts("of");
+        System.out.println("Found " + map.size() + " pages with the word 'of'");
+        for (Map.Entry<String, Integer> entry: map.entrySet()) {
+            System.out.println(entry);
+        }
+        map = index.getCounts("javascript");
+        System.out.println("Found " + map.size() + " pages with the word 'javascript'");
         for (Map.Entry<String, Integer> entry: map.entrySet()) {
             System.out.println(entry);
         }

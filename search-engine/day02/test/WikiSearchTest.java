@@ -22,16 +22,16 @@ public class WikiSearchTest {
      */
     @Before
     public void setUp() throws Exception {
-        Map<String, Integer> map1 = new HashMap<String, Integer>();
-        map1.put("Page1", 1);
-        map1.put("Page2", 2);
-        map1.put("Page3", 3);
+        Map<String, Double> map1 = new HashMap<String, Double>();
+        map1.put("Page1", 1.0);
+        map1.put("Page2", 2.0);
+        map1.put("Page3", 3.0);
         search1 = new WikiSearch(map1);
 
-        Map<String, Integer> map2 = new HashMap<String, Integer>();
-        map2.put("Page2", 4);
-        map2.put("Page3", 5);
-        map2.put("Page4", 7);
+        Map<String, Double> map2 = new HashMap<String, Double>();
+        map2.put("Page2", 4.0);
+        map2.put("Page3", 5.0);
+        map2.put("Page4", 7.0);
         search2 = new WikiSearch(map2);
     }
 
@@ -79,7 +79,7 @@ public class WikiSearchTest {
      */
     @Test
     public void testSort() {
-        List<Map.Entry<String, Integer>> list = search2.sort();
+        List<Map.Entry<String, Double>> list = search2.sort();
         assertThat(list.get(0).getValue(), is(4));
         assertThat(list.get(1).getValue(), is(5));
         assertThat(list.get(2).getValue(), is(7));

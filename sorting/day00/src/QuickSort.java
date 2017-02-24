@@ -1,18 +1,22 @@
+import org.apache.commons.lang3.ArrayUtils;
+
+import java.lang.reflect.Array;
+
 public class QuickSort extends SortAlgorithm {
 
     private static final int INSERTION_THRESHOLD = 10;
 
     /**
-     * Best-case runtime:
-     * Worst-case runtime:
-     * Average-case runtime:
+     * Best-case runtime: O(nlogn)
+     * Worst-case runtime: O(n^2)
+     * Average-case runtime: O(nlogn)
      *
-     * Space-complexity:
+     * Space-complexity: O(n)
      */
     @Override
     public int[] sort(int[] array) {
-        // TODO: Sort the array. Make sure you avoid the O(N^2) runtime worst-case
-        return new int[0];
+        quickSort(array, 0, array.length - 1);
+        return array;
     }
 
     /**
@@ -24,7 +28,15 @@ public class QuickSort extends SortAlgorithm {
      * @param high The ending index of the subarray being considered (inclusive)
      */
     public void quickSort(int[] a, int low, int high) {
-        // TODO
+        if (low < high) {
+            int p = partition(a, low, high);
+            if (low < p - 1) {
+                quickSort(a, low, p - 1);
+            }
+            if (p < high) {
+                quickSort(a, p, high);
+            }
+        }
     }
 
 
@@ -37,8 +49,40 @@ public class QuickSort extends SortAlgorithm {
      * @param high The ending index of the subarray being considered (inclusive)
      */
     public int partition(int[] array, int low, int high) {
-        // TODO
-        return 0;
+        int pivot = array[low];
+        int i = low;
+        int j = high;
+        int t;
+
+        while (i <= j) {
+            while (array[i] < pivot)
+                i++;
+            while (array[j] > pivot)
+                j--;
+            if (i <= j) {
+                t = array[i];
+                array[i] = array[j];
+                array[j] = t;
+                i++;
+                j--;
+            }
+        }
+
+        return i;
     }
 
+    public static void main(String[] args) {
+        QuickSort s = new QuickSort();
+
+        int[] c = new int[] {5,6,8,3,1,10,2,5};
+        System.out.println("Original:    " + ArrayUtils.toString(c));
+
+        int[] partitioned = new int[] {2,3,1,5,8,10,6,5};
+        int finalIndex = s.partition(c, 0, 7);
+        System.out.println("Partitioned: " + ArrayUtils.toString(c));
+        System.out.println("   Expected: " + ArrayUtils.toString(partitioned));
+
+        c = new int[] {5,6,8,3,1,10,2,5};
+        System.out.println("Sorted:      " + ArrayUtils.toString(s.sort(c)));
+    }
 }
