@@ -1,4 +1,3 @@
-
 public class PeakFinding {
 
     // Return -1 is left is higher, 1 if right is higher, 0 if peak
@@ -47,46 +46,23 @@ public class PeakFinding {
         return maxIndex;
     }
 
+
     public static int findOneDPeak(int[] nums){
-        int dist = nums.length/2;
-    	int index = nums.length/2;
-    	int dir = peak(index, nums);
-    	while (dir != 0) {
-    	    dist = Math.max(dist / 2, 1);
-            index += dir * dist;
-            dir = peak(index, nums);
+        int lo = 0;
+        int hi = nums.length;
+        while (lo < hi) {
+            int mid = (hi+lo)/2;
+            int direction = peak(mid, nums);
+            if (direction == 0) return mid;
+            else if (direction == -1) hi = mid;
+            else if (direction == 1) lo = mid+1;
         }
-
-        return index;
+        return -1;
     }
 
-    public static int[] findTwoDPeak(int[][] nums){
-    	int dist = nums.length/2;
-    	int x = nums.length/2;
-    	int y = nums[0].length/2;
-
-    	int dirX = peakX(x, y, nums);
-    	int dirY = peakY(x, y, nums);
-
-    	while(dirX != 0 || dirY != 0) {
-    	    dist = Math.max(dist / 2, 1);
-    	    x += dirX * dist;
-    	    y += dirY * dist;
-    	    dirX = peakX(x, y, nums);
-            dirY = peakY(x, y, nums);
-        }
-//        System.out.println("dirX: " + dirX);
-//        System.out.println("dirY: " + dirY);
-//        System.out.println("x: " + x);
-//        System.out.println("y: " + y);
-        int[] answer = {y,x}; // r u kidding me
-        return answer;
-    }
-
-    public static void main(String[] args) {
-        PeakFinding p = new PeakFinding();
-        int[] a = {1, 1, 1, 1, 2, 3, 1};
-        System.out.println(p.findOneDPeak(a));
+    public static int[] findTwoDPeak(int[][] nums) {
+        // TODO
+        return null;
     }
 
 }
