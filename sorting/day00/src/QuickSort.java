@@ -50,6 +50,10 @@ public class QuickSort extends SortAlgorithm {
      */
     public int partition(int[] array, int low, int high) {
         int pivot = array[low];
+
+        array[low] = array[(low + high) / 2];
+        array[(low + high) / 2] = pivot;
+
         int i = low;
         int j = high;
         int t;
@@ -83,6 +87,10 @@ public class QuickSort extends SortAlgorithm {
         System.out.println("   Expected: " + ArrayUtils.toString(partitioned));
 
         c = new int[] {5,6,8,3,1,10,2,5};
+        System.out.println("Sorted:      " + ArrayUtils.toString(s.sort(c)));
+
+        System.out.println();
+        c = new int[] {1,5,2,6,8,3,7,3,6,78,2,1,1,7,7,0,-1,1,-1,-2,-7,-5,0,5,2};
         System.out.println("Sorted:      " + ArrayUtils.toString(s.sort(c)));
     }
 }

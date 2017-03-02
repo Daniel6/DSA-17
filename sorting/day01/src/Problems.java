@@ -1,3 +1,5 @@
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,6 +15,9 @@ public class Problems {
         return new PriorityQueue<>(11, Collections.reverseOrder());
     }
 
+    /*
+        Return either the middle element of the list or the average of the two middle elements if the list is even length.
+     */
     private static double getMedian(List<Integer> A) {
         double median = (double) A.get(A.size()/2);
         if (A.size() % 2 == 0)
@@ -41,8 +46,16 @@ public class Problems {
      * @return the median of the stream, after each element has been added
      */
     public static double[] runningMedian(int[] inputStream) {
+        HeapSort sorter = new HeapSort();
+        inputStream = sorter.sort(inputStream);
         double[] runningMedian = new double[inputStream.length];
-        // TODO
+        for (int i = 0; i < inputStream.length; i++) {
+            if (i%2 == 0) { // even
+                runningMedian[i] = inputStream[i/2];
+            } else { // odd
+                runningMedian[i] = (inputStream[i/2] + inputStream[(i/2) + 1]) / 2.0;
+            }
+        }
         return runningMedian;
     }
 

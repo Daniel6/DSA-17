@@ -124,15 +124,15 @@ public class SortTest {
         int finalIndex;
 
         a = new int[] {5,6,8,3,1,10,2,5};
-        partitioned = new int[] {2,3,1,5,8,10,6,5};
+        partitioned = new int[] {3,1,2,5,8,10,6,5};
         finalIndex = quickSort.partition(a, 0, 7);
-        assertThat(finalIndex, is(3));
+        assertThat(finalIndex, is(4));
         assertArrayEquals(a, partitioned);
 
         a = new int[] {5,6,8,3,1,10,2,5};
         partitioned = new int[] {5,6,2,3,1,8,10,5};
         finalIndex = quickSort.partition(a, 2, 6);
-        assertThat(finalIndex, is(5));
+        assertThat(finalIndex, is(6));
         assertArrayEquals(a, partitioned);
     }
 

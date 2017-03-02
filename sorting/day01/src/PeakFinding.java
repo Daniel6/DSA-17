@@ -61,8 +61,23 @@ public class PeakFinding {
     }
 
     public static int[] findTwoDPeak(int[][] nums) {
-        // TODO
-        return null;
+        int dist = nums.length/2;
+        int x = nums.length/2;
+        int y = nums[0].length/2;
+
+        int dirX = peakX(x, y, nums);
+        int dirY = peakY(x, y, nums);
+
+        while(dirX != 0 || dirY != 0) {
+            dist = Math.max(dist / 2, 1);
+            x += dirX * dist;
+            y += dirY * dist;
+            dirX = peakX(x, y, nums);
+            dirY = peakY(x, y, nums);
+        }
+
+        int[] answer = {y,x}; // r u kidding me
+        return answer;
     }
 
 }

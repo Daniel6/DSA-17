@@ -75,10 +75,7 @@ public class PeakFinding {
     	    dirX = peakX(x, y, nums);
             dirY = peakY(x, y, nums);
         }
-//        System.out.println("dirX: " + dirX);
-//        System.out.println("dirY: " + dirY);
-//        System.out.println("x: " + x);
-//        System.out.println("y: " + y);
+
         int[] answer = {y,x}; // r u kidding me
         return answer;
     }
