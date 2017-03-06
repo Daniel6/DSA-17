@@ -40,7 +40,7 @@ If you're having trouble with radix sort, you can continue watching the [MIT lec
 
 ### Sort numbers between -100 and 100.
 
-You are given an array of non-negative integers between [-100, 100], inclusive. Write a function to sort them as quickly as possible. Feel free to use code you've already written.
+You are given an array of integers in the range [-100, 100], inclusive. Write a function to sort them as quickly as possible. Feel free to use code you've already written.
 
 ### Sort array of `String`s
 
