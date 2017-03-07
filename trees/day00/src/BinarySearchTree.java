@@ -1,3 +1,5 @@
+import com.google.common.collect.Lists;
+
 import java.util.List;
 
 public class BinarySearchTree<T extends Comparable<T>> {
@@ -28,8 +30,43 @@ public class BinarySearchTree<T extends Comparable<T>> {
     }
 
     public List<T> inOrderTraversal() {
-        // TODO
-        return null;
+        return inOrderTraversal(this.root);
+    }
+
+    public List<T> inOrderTraversal(TreeNode<T> root) {
+        List<T> traversal = Lists.newArrayList();
+
+        if (root == null) {
+            return traversal;
+        }
+
+        if (root.hasLeftChild()) {
+            traversal.addAll(inOrderTraversal(root.leftChild));
+        }
+
+        traversal.add(root.key);
+
+        if (root.hasRightChild()) {
+            traversal.addAll(inOrderTraversal(root.rightChild));
+        }
+
+        return traversal;
+    }
+
+    public List<TreeNode<T>> inOrderTraversal_Nodes(TreeNode<T> root) {
+        List<TreeNode<T>> traversal = Lists.newArrayList();
+
+        if (root.hasLeftChild()) {
+            traversal.addAll(inOrderTraversal_Nodes(root.leftChild));
+        }
+
+        traversal.add(root);
+
+        if (root.hasRightChild()) {
+            traversal.addAll(inOrderTraversal_Nodes(root.rightChild));
+        }
+
+        return traversal;
     }
 
     /**
@@ -66,8 +103,15 @@ public class BinarySearchTree<T extends Comparable<T>> {
             replacement = (n.hasRightChild()) ? n.rightChild : n.leftChild; // replacement is the non-null child
         else {
             // Case 3: two children
-            // TODO
-            replacement = null;
+            // Find min of right subtree
+            replacement = n.rightChild;
+            while(replacement.hasLeftChild()) {
+                replacement = replacement.leftChild;
+            }
+
+            n.key = replacement.key;
+            delete(replacement);
+            return n;
         }
 
         // Put the replacement in its correct place, and set the parent.
@@ -96,13 +140,30 @@ public class BinarySearchTree<T extends Comparable<T>> {
     }
 
     private TreeNode<T> findPredecessor(TreeNode<T> n) {
-        // TODO
-        return null;
+        TreeNode<T> predecessor = null;
+
+        for (TreeNode<T> node : inOrderTraversal_Nodes(root)) {
+            if (node.key.compareTo(n.key) < 0) {
+                predecessor = node;
+            } else {
+                break;
+            }
+        }
+
+        return predecessor;
     }
 
     private TreeNode<T> findSuccessor(TreeNode<T> n) {
-        // TODO
-        return null;
+        TreeNode<T> successor = null;
+
+        for (TreeNode<T> node : inOrderTraversal_Nodes(root)) {
+            if (node.key.compareTo(n.key) > 0) {
+                successor = node;
+                break;
+            }
+        }
+
+        return successor;
     }
 
     /**
