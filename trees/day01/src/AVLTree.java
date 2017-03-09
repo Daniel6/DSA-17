@@ -1,3 +1,5 @@
+import sun.reflect.generics.tree.Tree;
+
 public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
 
     /**
@@ -7,7 +9,7 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
     TreeNode<T> delete(TreeNode<T> n, T key) {
         n = super.delete(n,key);
         if(n != null) {
-            // TODO: Update height and balance tree
+            balance(n);
         }
         return null;
     }
@@ -18,7 +20,7 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
     TreeNode<T> insert(TreeNode<T>  n, T key) {
         n = super.insert(n,key);
         if(n != null) {
-            // TODO: update height and balance tree
+            balance(n);
         }
         return null;
     }
@@ -38,8 +40,11 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
 
     // Return the height of the given node. Return -1 if null.
     private int height(TreeNode<T> n) {
-        // TODO
-        return 0;
+        if (n == null) {
+            return -1;
+        } else {
+            return Math.max(height(n.leftChild), height(n.rightChild)) + 1;
+        }
     }
 
     public int height() {
@@ -47,9 +52,41 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
     }
 
     // Restores the AVL tree property of the subtree.
+    /*  Pseudocode implementation
+
+        if (n is right heavy by 2 or more) {
+            if (n.right is left heavy by 1) {
+                n.right = rotate_right(n.right);
+            }
+            n = rotate_left(n);
+        }
+
+        if (n is left heavy by 2 or more) {
+            if (n.left is right heavy by 1) {
+                n.left = rotate_left(n.left);
+            }
+            n = rotate_right(n);
+        }
+        return n;
+
+     */
     TreeNode<T> balance(TreeNode<T> n) {
-        // TODO
-        return null;
+        int balansFactor = balanceFactor(n); // ))) blyat
+        if (balansFactor >= 2) { // very right heavy
+            if (balanceFactor(n.rightChild) == -1) { // right child is slightly left heavy
+                rotateRight(n.rightChild); // no need for assignment as rotation is done in-place
+            }
+            rotateLeft(n);
+        }
+
+        if (balansFactor <= -2) { // very left heavy
+            if (balanceFactor(n.leftChild) == 1) { // left child is slightly right heavy
+                rotateLeft(n.leftChild);
+            }
+            rotateRight(n);
+        }
+
+        return n;
     }
 
     /**
@@ -58,25 +95,51 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
      * this order. Therefore, a subtree with a balance factor of -1, 0 or 1 has
      * the AVL property since the heights of the two child subtrees differ by at
      * most one.
+     *
+     * A positive balance factors means that the right child is higher, while a negative factors indicates a taller left child.
      */
     private int balanceFactor(TreeNode<T> n) {
-        // TODO
-        return 0;
+        return height(n.rightChild) - height(n.leftChild);
     }
 
     /**
      * Perform a right rotation on node `n`. Return the head of the rotated tree.
+     * Does an in-place rotation, meaning that the head of the tree before the rotation is still the head of the tree after the rotation.
+     * This saves us from having to re-do pointers leading into the rotated tree.
      */
     private TreeNode<T> rotateRight(TreeNode<T> n) {
-        // TODO
-        return null;
+        TreeNode<T> oldLeftChild = n.leftChild;
+
+        // Swap keys
+        T temp = n.key;
+        n.key = oldLeftChild.key;
+        oldLeftChild.key = temp;
+
+        n.leftChild = oldLeftChild.leftChild;
+        oldLeftChild.leftChild = oldLeftChild.rightChild;
+        oldLeftChild.rightChild = n.rightChild;
+        n.rightChild = oldLeftChild;
+
+        return n;
     }
 
     /**
      * Perform a left rotation on node `n`. Return the head of the rotated tree.
+     * Does an in-place rotation like rotateRight()
      */
     private TreeNode<T> rotateLeft(TreeNode<T> n) {
-        // TODO
-        return null;
+        TreeNode<T> oldRightChild = n.rightChild;
+
+        // Swap keys
+        T temp = n.key;
+        n.key = oldRightChild.key;
+        oldRightChild.key = temp;
+
+        n.rightChild = oldRightChild.rightChild;
+        oldRightChild.rightChild = oldRightChild.leftChild;
+        oldRightChild.leftChild = n.leftChild;
+        n.leftChild = oldRightChild;
+
+        return n;
     }
 }
