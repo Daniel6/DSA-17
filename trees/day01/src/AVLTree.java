@@ -8,8 +8,8 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
     @Override
     TreeNode<T> delete(TreeNode<T> n, T key) {
         n = super.delete(n,key);
-        if(n != null) {
-            balance(n);
+        if (n != null) {
+            return balance(n);
         }
         return null;
     }
@@ -19,8 +19,8 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
     @Override
     TreeNode<T> insert(TreeNode<T>  n, T key) {
         n = super.insert(n,key);
-        if(n != null) {
-            balance(n);
+        if (n != null) {
+            return balance(n);
         }
         return null;
     }
@@ -43,7 +43,8 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
         if (n == null) {
             return -1;
         } else {
-            return Math.max(height(n.leftChild), height(n.rightChild)) + 1;
+            n.height = 1 + Math.max(height(n.leftChild), height(n.rightChild));
+            return n.height;
         }
     }
 
@@ -71,20 +72,23 @@ public class AVLTree<T extends Comparable<T>> extends BinarySearchTree<T> {
 
      */
     TreeNode<T> balance(TreeNode<T> n) {
-        int balansFactor = balanceFactor(n); // ))) blyat
-        if (balansFactor >= 2) { // very right heavy
+        int balanceFactor = balanceFactor(n);
+        if (balanceFactor > 1) { // very right heavy
             if (balanceFactor(n.rightChild) == -1) { // right child is slightly left heavy
-                rotateRight(n.rightChild); // no need for assignment as rotation is done in-place
+                rotateRight(n.rightChild);
             }
             rotateLeft(n);
         }
 
-        if (balansFactor <= -2) { // very left heavy
+        if (balanceFactor < -1) { // very left heavy
             if (balanceFactor(n.leftChild) == 1) { // left child is slightly right heavy
                 rotateLeft(n.leftChild);
             }
             rotateRight(n);
         }
+
+        // Recalculate heights
+        height(n);
 
         return n;
     }
