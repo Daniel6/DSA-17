@@ -1,5 +1,7 @@
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -77,7 +79,85 @@ public class Board {
      * is valid, add it to an accumulator.
      */
     public Iterable<Board> neighbors() {
-    	// TODO: Your code here
+    	HashSet<Board> neighbors = Sets.newHashSet();
+
+    	// Find empty space
+        int r = 0;
+        int c = 0;
+        for (int row = 0; row < tiles.length; row++) {
+            for (int column = 0; column < tiles[row].length; column++) {
+                if (tiles[row][column] == 0) {
+                    r = row;
+                    c = column;
+                }
+            }
+        }
+
+        if (r > 0) {
+            // Try shifting up
+            // Deep copy game state
+            int[][] altTiles = copyOf(tiles);
+
+            int t = altTiles[r-1][c];
+            altTiles[r-1][c] = altTiles[r][c];
+            altTiles[r][c] = t;
+            Board altBoard = new Board(altTiles);
+            if (altBoard.solvable()) {
+                neighbors.add(altBoard);
+            }
+        }
+
+        if (r < tiles.length - 1) {
+            // Try shifting down
+            Board b = shiftAndCopy(this, r, c, 1, 0);
+            if (b != null) {
+                neighbors.add(b);
+            }
+        }
+
+        if (r > 0) {
+            // Try shifting up
+            Board b = shiftAndCopy(this, r, c, -1, 0);
+            if (b != null) {
+                neighbors.add(b);
+            }
+        }
+
+        if (c < tiles[r].length - 1) {
+            // Try shifting right
+            Board b = shiftAndCopy(this, r, c, 0, 1);
+            if (b != null) {
+                neighbors.add(b);
+            }
+        }
+
+        if (c > 0) {
+            // Try shifting left
+            Board b = shiftAndCopy(this, r, c, 0, -1);
+            if (b != null) {
+                neighbors.add(b);
+            }
+        }
+
+        return neighbors;
+    }
+
+    /*
+        either dr or dc must be 0
+     */
+    public Board shiftAndCopy(Board b, int r, int c, int dr, int dc) {
+        if (dr != 0 && dc != 0) {
+            return null;
+        }
+        int[][] altTiles = copyOf(b.tiles);
+
+        int t = altTiles[r+dr][c+dc];
+        altTiles[r+dr][c+dc] = altTiles[r][c];
+        altTiles[r][c] = t;
+        Board altBoard = new Board(altTiles);
+        if (altBoard.solvable()) {
+            return altBoard;
+        }
         return null;
     }
 
@@ -115,6 +195,16 @@ public class Board {
             }
         }
         return true;
+    }
+
+    /**
+     * Creates a deep copy of the input array and returns it
+     */
+    private static int[][] copyOf(int[][] A) {
+        int[][] B = new int[A.length][A[0].length];
+        for (int i = 0; i < A.length; i++)
+            System.arraycopy(A[i], 0, B[i], 0, A[0].length);
+        return B;
     }
 
     public static void main(String[] args) {
