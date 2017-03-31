@@ -43,6 +43,9 @@ public class Board {
      * Compare the current state to the goal state
      */
     public boolean isGoal() {
+        if (tiles == null) {
+            return false;
+        }
     	return tiles.equals(goal);
     }
 
