@@ -1,3 +1,5 @@
+import com.google.common.collect.Lists;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -39,16 +41,33 @@ public class Board {
      * Compare the current state to the goal state
      */
     public boolean isGoal() {
-    	// TODO: Your code here
-        return false;
+    	return tiles.equals(goal);
     }
 
     /*
      * Returns true if the board is solvable
      */
     public boolean solvable() {
-    	// TODO: Your code here
-        return false;
+    	int inversions = 0;
+
+    	List<Integer> listified = Lists.newArrayList();
+    	for (int[] row : tiles) {
+    	    for (int i : row) {
+    	        if (i != 0) {
+                    listified.add(i);
+                }
+            }
+        }
+
+        for (int i = 0; i < listified.size(); i++) {
+    	    for (int j = i+1; j < listified.size(); j++) {
+    	        if (listified.get(j) > listified.get(i)) {
+    	            inversions++;
+                }
+            }
+        }
+
+        return !(inversions % 2 == 1);
     }
 
     /*
