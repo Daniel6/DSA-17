@@ -26,12 +26,21 @@ public class Solver {
         private int moves;
         public int cost;
         private State prev;
+        public Heuristic heuristic;
 
         public State(Board board, int moves, State prev) {
             this.board = board;
             this.moves = moves;
             this.prev = prev;
-            cost = board.manhattan() + this.moves;
+            cost = board.applyHeuristic(null) + this.moves;
+        }
+
+        public State(Board board, int moves, State prev, Heuristic h) {
+            this.board = board;
+            this.moves = moves;
+            this.prev = prev;
+            this.heuristic = h;
+            cost = board.applyHeuristic(h) + this.moves;
         }
 
         @Override
@@ -54,7 +63,7 @@ public class Solver {
     /*
      * Return the root state of a given state
      */
-    private State root(State state) {
+    private State root(State state, Heuristic h) {
         State s = state;
     	while (s.prev != null) {
     	    s = s.prev;
@@ -68,7 +77,11 @@ public class Solver {
      * and a identify the shortest path to the the goal state
      */
     public Solver(Board initial) {
-    	this.root = new State(initial, 0, null);
+        this.root = new State(initial, 0, null);
+    }
+
+    public Solver(Board initial, Heuristic h) {
+    	this.root = new State(initial, 0, null, h);
     }
 
     /*
@@ -111,7 +124,7 @@ public class Solver {
                 break;
             } else {
                 for (Board neighbor : s.board.neighbors()) {
-                    State n = new State(neighbor, s.moves + 1, s);
+                    State n = new State(neighbor, s.moves + 1, s, s.heuristic);
                     pq.add(n);
                 }
             }
@@ -135,20 +148,34 @@ public class Solver {
      * states
      */
     public static void main(String[] args) {
-        int[][] initState = {{8, 6, 7}, {2, 5, 4}, {3, 0, 1}};
-        Board initial = new Board(initState);
+        int[][] initState_hardest = {{8, 6, 7}, {2, 5, 4}, {3, 0, 1}};
+        int[][] initState_easy = {{1, 2, 3}, {4, 6, 5}, {0, 8, 7}};
+        int[][] goal = {{1, 2, 3}, {4, 5, 6}, {7, 8, 0}};
+        Board initial = new Board(initState_easy);
 
         // Solve the puzzle
-        Solver solver = new Solver(initial);
+        Heuristic misplacedTiles = (int[][] tiles) -> {
+            int sum = 0;
+            for (int row = 0; row < tiles.length; row++) {
+                for (int col = 0; col < tiles[row].length; col++) {
+                    if (tiles[row][col] != goal[row][col]) sum++;
+                }
+            }
+
+            return sum;
+        };
+        Solver solver = new Solver(initial, misplacedTiles);
         System.out.println("Solver Created.");
         if (!solver.isSolvable())
             System.out.println("No solution");
         else {
             System.out.println("Solver Running...");
+            long start = System.currentTimeMillis();
             for (Board board : solver.solution()) {
                 board.printBoard();
             }
             System.out.println(solver.minMoves);
+            System.out.println("Runtime: " + ((System.currentTimeMillis() - start) / 1000.0) + " s");
         }
     }
 

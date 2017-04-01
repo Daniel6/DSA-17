@@ -46,6 +46,14 @@ public class Board {
         return tiles.length;
     }
 
+    public int applyHeuristic(Heuristic h) {
+        if (h == null) {
+            return manhattan();
+        } else {
+            return h.getCost(tiles);
+        }
+    }
+
     /*
      * Sum of the manhattan distances between the tiles and the goal
      * Estimated cost from the current node to the goal for A* (h(n))
