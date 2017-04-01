@@ -97,10 +97,11 @@ public class Solver {
         pq.add(root);
         while (!pq.isEmpty()) {
             State s = pq.poll();
-            System.out.println(s.cost);
-            s.board.printBoard();
             if (s.board.isGoal()) {
                 // Add all boards to solution set
+                if (minMoves == -1 || s.moves < minMoves) {
+                    minMoves = s.moves;
+                }
                 solution.add(s.board);
                 State curr = s;
                 while (curr.prev != null) {
@@ -143,6 +144,7 @@ public class Solver {
         if (!solver.isSolvable())
             System.out.println("No solution");
         else {
+            System.out.println("Solver Running...");
             for (Board board : solver.solution()) {
                 board.printBoard();
             }
