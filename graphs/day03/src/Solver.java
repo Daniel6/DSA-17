@@ -1,3 +1,6 @@
+import java.util.Comparator;
+import java.util.PriorityQueue;
+
 /**
  * Solver definition for the 8 Puzzle challenge
  * Construct a tree of board states using A* to find a path to the goal
@@ -64,12 +67,20 @@ public class Solver {
     public Solver(Board initial) {
     	State root = new State(initial, 0, null);
 
-//        PriorityQueue<State> pq = PriorityQue
+        PriorityQueue<State> pq = new PriorityQueue<>(new Comparator<State>() {
+            @Override
+            public int compare(State o1, State o2) {
+                return o1.compareTo(o2);
+            }
+        });
 
-
-        for (Board neighbor : root.board.neighbors()) {
-    	    State n = new State(neighbor, root.moves + 1, root);
-//    	    pq.
+        pq.add(root);
+        while (!pq.isEmpty()) {
+            State s = pq.poll();
+            for (Board neighbor : s.board.neighbors()) {
+                State n = new State(neighbor, s.moves + 1, s);
+                pq.add(n);
+            }
         }
     }
 
