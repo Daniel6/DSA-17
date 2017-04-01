@@ -34,7 +34,9 @@ public class PuzzleTest {
     @Test
     public void testGoal() {
         assertThat(board.isGoal(), is(false));
+        assertThat(new Board(new int[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 0}}).isGoal(), is(true));
     }
+
 
     // Test solver with several initial board states
 
