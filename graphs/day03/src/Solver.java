@@ -1,4 +1,7 @@
+import com.google.common.collect.Lists;
+
 import java.util.Comparator;
+import java.util.List;
 import java.util.PriorityQueue;
 
 /**
@@ -11,6 +14,7 @@ public class Solver {
     public int minMoves = -1;
     private State solutionState;
     private boolean solved = false;
+    private State root;
 
     /**
      * State class to make the cost calculations simple
@@ -27,7 +31,6 @@ public class Solver {
             this.board = board;
             this.moves = moves;
             this.prev = prev;
-            // TODO: Compute cost of board state according to A*
             cost = board.manhattan() + this.moves;
         }
 
@@ -65,8 +68,25 @@ public class Solver {
      * and a identify the shortest path to the the goal state
      */
     public Solver(Board initial) {
-    	State root = new State(initial, 0, null);
+    	this.root = new State(initial, 0, null);
+    }
 
+    /*
+     * Is the input board a solvable state
+     */
+    public boolean isSolvable() {
+    	return root.board.solvable();
+    }
+
+    /*
+     * Return the sequence of boards in a shortest solution, null if unsolvable
+     */
+    public Iterable<Board> solution() {
+        if (!isSolvable()) {
+            return null;
+        }
+
+        List<Board> solution = Lists.newArrayList();
         PriorityQueue<State> pq = new PriorityQueue<>(new Comparator<State>() {
             @Override
             public int compare(State o1, State o2) {
@@ -77,27 +97,24 @@ public class Solver {
         pq.add(root);
         while (!pq.isEmpty()) {
             State s = pq.poll();
-            for (Board neighbor : s.board.neighbors()) {
-                State n = new State(neighbor, s.moves + 1, s);
-                pq.add(n);
+            if (s.board.isGoal()) {
+                // Add all boards to solution set
+                solution.add(s.board);
+                State curr = s;
+                while (curr.prev != null) {
+                    curr = curr.prev;
+                    solution.add(0, curr.board);
+                }
+                break;
+            } else {
+                for (Board neighbor : s.board.neighbors()) {
+                    State n = new State(neighbor, s.moves + 1, s);
+                    pq.add(n);
+                }
             }
         }
-    }
 
-    /*
-     * Is the input board a solvable state
-     */
-    public boolean isSolvable() {
-    	// TODO: Your code here
-        return false;
-    }
-
-    /*
-     * Return the sequence of boards in a shortest solution, null if unsolvable
-     */
-    public Iterable<Board> solution() {
-    	// TODO: Your code here
-        return null;
+        return solution;
     }
 
     public State find(Iterable<State> iter, Board b) {
@@ -120,6 +137,7 @@ public class Solver {
 
         // Solve the puzzle
         Solver solver = new Solver(initial);
+        System.out.println("Solver Created.");
         if (!solver.isSolvable())
             System.out.println("No solution");
         else {
