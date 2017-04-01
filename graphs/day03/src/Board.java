@@ -1,5 +1,7 @@
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.HashMap;
+
+import static java.lang.Math.abs;
 
 /**
  * Board definition for the 8 Puzzle challenge
@@ -9,12 +11,27 @@ public class Board {
     private int n;
     public int[][] tiles;
     private int[][] goal = {{1, 2, 3}, {4, 5, 6}, {7, 8, 0}};
+    private HashMap<Integer, int[]> goalPositions;
 
     /*
      * Set the global board size and tile state
      */
     public Board(int[][] b) {
-        // TODO: Your code here
+        tiles = Arrays.copyOf(b, b.length);
+
+        // populate goalPositions
+        // TODO: verify
+        goal = new int[b.length][b[0].length];
+        int n = 1;
+        goalPositions = new HashMap<>();
+        for (int y = 0; y < b.length; y++) {
+            for (int x = 0; x < b.length; x++) {
+                goal[y][x] = n;
+                goalPositions.put(n, new int[]{x, y});
+                n++;
+                if (n == b.length * b[0].length) n = 0;
+            }
+        }
     }
 
     /*
@@ -22,8 +39,7 @@ public class Board {
      * class should  work for any puzzle size)
      */
     private int size() {
-    	// TODO: Your code here
-        return 0;
+        return tiles.length;
     }
 
     /*
@@ -31,16 +47,32 @@ public class Board {
      * Estimated cost from the current node to the goal for A* (h(n))
      */
     public int manhattan() {
-		// TODO: Your code here
-        return 0;
+        int[][] t = tiles;
+        HashMap<Integer, int[]> g = goalPositions;
+
+        int m = 0; // manhattan distance
+
+        int i, j; // target position;
+        int[] targetPosition;
+
+        for (int y = 0; y < tiles.length; y++) {
+            for (int x = 0; x < tiles[0].length; x++) {
+                if (tiles[y][x] != 0) {
+                    targetPosition = goalPositions.get(tiles[y][x]);
+                    m += abs(x - targetPosition[0]) + abs(y - targetPosition[1]);
+                }
+            }
+        }
+		// TODO: verify
+        return m;
     }
 
     /*
      * Compare the current state to the goal state
      */
     public boolean isGoal() {
-    	// TODO: Your code here
-        return false;
+        return equals(goal);
+    	// TODO: verify
     }
 
     /*

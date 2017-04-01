@@ -14,6 +14,7 @@ Constructor:
 - `Board(int[][] b)`, creates an 8 Puzzle board state with the tiles 1-8 and a zero for the empty space from the 3x3 2D array input.  The board state is stored in an array named `tiles`.
 
 Methods to Complete:
+
 - `int size()`, returns the board side size, for the 8-puzzle this is 3
 - `int manhattan()`, returns the sum of the Manhattan distances between the tiles and the goal, this is the estimated cost from the current state to the goal for A*, refer to the lecture notes if you need a reminder of how to calculate this
 - `boolean isGoal()`, returns true if the board state is the solved puzzle
