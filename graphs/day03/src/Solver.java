@@ -3,6 +3,8 @@
  * Construct a tree of board states using A* to find a path to the goal
  */
 
+import com.google.common.collect.Queues;
+
 import java.util.*;
 
 public class Solver {
@@ -27,7 +29,7 @@ public class Solver {
             this.moves = moves;
             this.prev = prev;
             // TODO: Compute cost of board state according to A*
-            cost = 0;
+            cost = board.manhattan() + this.moves;
         }
 
         @Override
@@ -51,8 +53,11 @@ public class Solver {
      * Return the root state of a given state
      */
     private State root(State state) {
-    	// TODO: Your code here
-        return null;
+        State s = state;
+    	while (s.prev != null) {
+    	    s = s.prev;
+        }
+        return s;
     }
 
     /*
@@ -61,7 +66,15 @@ public class Solver {
      * and a identify the shortest path to the the goal state
      */
     public Solver(Board initial) {
-    	// TODO: Your code here
+    	State root = new State(initial, 0, null);
+
+        PriorityQueue<State> pq = PriorityQueue.
+
+
+        for (Board neighbor : root.board.neighbors()) {
+    	    State n = new State(neighbor, root.moves + 1, root);
+    	    pq.
+        }
     }
 
     /*

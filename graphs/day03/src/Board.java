@@ -53,26 +53,29 @@ public class Board {
      * Returns true if the board is solvable
      */
     public boolean solvable() {
-    	int inversions = 0;
+        if (tiles != null) {
+            int inversions = 0;
 
-    	List<Integer> listified = Lists.newArrayList();
-    	for (int[] row : tiles) {
-    	    for (int i : row) {
-    	        if (i != 0) {
-                    listified.add(i);
+            List<Integer> listified = Lists.newArrayList();
+            for (int[] row : tiles) {
+                for (int i : row) {
+                    if (i != 0) {
+                        listified.add(i);
+                    }
                 }
             }
-        }
 
-        for (int i = 0; i < listified.size(); i++) {
-    	    for (int j = i+1; j < listified.size(); j++) {
-    	        if (listified.get(j) > listified.get(i)) {
-    	            inversions++;
+            for (int i = 0; i < listified.size(); i++) {
+                for (int j = i + 1; j < listified.size(); j++) {
+                    if (listified.get(j) > listified.get(i)) {
+                        inversions++;
+                    }
                 }
             }
-        }
 
-        return !(inversions % 2 == 1);
+            return !(inversions % 2 == 1);
+        }
+        return false;
     }
 
     /*
@@ -82,66 +85,68 @@ public class Board {
      * is valid, add it to an accumulator.
      */
     public Iterable<Board> neighbors() {
-    	HashSet<Board> neighbors = Sets.newHashSet();
+        HashSet<Board> neighbors = Sets.newHashSet();
+        if (tiles != null) {
 
-    	// Find empty space
-        int r = 0;
-        int c = 0;
-        for (int row = 0; row < tiles.length; row++) {
-            for (int column = 0; column < tiles[row].length; column++) {
-                if (tiles[row][column] == 0) {
-                    r = row;
-                    c = column;
+            // Find empty space
+            int r = 0;
+            int c = 0;
+            for (int row = 0; row < tiles.length; row++) {
+                for (int column = 0; column < tiles[row].length; column++) {
+                    if (tiles[row][column] == 0) {
+                        r = row;
+                        c = column;
+                    }
                 }
             }
-        }
 
-        if (r > 0) {
-            // Try shifting up
-            // Deep copy game state
-            int[][] altTiles = copyOf(tiles);
+            if (r > 0) {
+                // Try shifting up
+                // Deep copy game state
+                int[][] altTiles = copyOf(tiles);
 
-            int t = altTiles[r-1][c];
-            altTiles[r-1][c] = altTiles[r][c];
-            altTiles[r][c] = t;
-            Board altBoard = new Board(altTiles);
-            if (altBoard.solvable()) {
-                neighbors.add(altBoard);
+                int t = altTiles[r - 1][c];
+                altTiles[r - 1][c] = altTiles[r][c];
+                altTiles[r][c] = t;
+                Board altBoard = new Board(altTiles);
+                if (altBoard.solvable()) {
+                    neighbors.add(altBoard);
+                }
             }
-        }
 
-        if (r < tiles.length - 1) {
-            // Try shifting down
-            Board b = shiftAndCopy(this, r, c, 1, 0);
-            if (b != null) {
-                neighbors.add(b);
+            if (r < tiles.length - 1) {
+                // Try shifting down
+                Board b = shiftAndCopy(this, r, c, 1, 0);
+                if (b != null) {
+                    neighbors.add(b);
+                }
             }
-        }
 
-        if (r > 0) {
-            // Try shifting up
-            Board b = shiftAndCopy(this, r, c, -1, 0);
-            if (b != null) {
-                neighbors.add(b);
+            if (r > 0) {
+                // Try shifting up
+                Board b = shiftAndCopy(this, r, c, -1, 0);
+                if (b != null) {
+                    neighbors.add(b);
+                }
             }
-        }
 
-        if (c < tiles[r].length - 1) {
-            // Try shifting right
-            Board b = shiftAndCopy(this, r, c, 0, 1);
-            if (b != null) {
-                neighbors.add(b);
+            if (c < tiles[r].length - 1) {
+                // Try shifting right
+                Board b = shiftAndCopy(this, r, c, 0, 1);
+                if (b != null) {
+                    neighbors.add(b);
+                }
             }
-        }
 
-        if (c > 0) {
-            // Try shifting left
-            Board b = shiftAndCopy(this, r, c, 0, -1);
-            if (b != null) {
-                neighbors.add(b);
+            if (c > 0) {
+                // Try shifting left
+                Board b = shiftAndCopy(this, r, c, 0, -1);
+                if (b != null) {
+                    neighbors.add(b);
+                }
             }
-        }
 
+        }
         return neighbors;
     }
 
@@ -168,11 +173,13 @@ public class Board {
      * Prints out the board state nicely for debugging purposes
      */
     public void printBoard() {
-        for (int[] tile : tiles) {
-            for (int aTile : tile) System.out.print(aTile + " ");
+        if (tiles != null) {
+            for (int[] tile : tiles) {
+                for (int aTile : tile) System.out.print(aTile + " ");
+                System.out.println();
+            }
             System.out.println();
         }
-        System.out.println();
     }
 
     /*
