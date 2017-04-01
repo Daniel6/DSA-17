@@ -78,7 +78,12 @@ public class Board {
         if (tiles == null) {
             return false;
         }
-    	return tiles.equals(goal);
+        for (int y = 0; y < tiles.length; y++) {
+            for (int x = 0; x < tiles[0].length; x++) {
+                if (tiles[y][x] != goal[y][x]) return false;
+            }
+        }
+        return true;
     }
 
     /*
