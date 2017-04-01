@@ -29,13 +29,16 @@ Methods to Complete:
 Fill in the class `Solver.java`. that represents the state tree and game solver for the puzzle board.  It should have the following structure.  Some of these methods have been completed for you.
 
 Constructor:
+
 - `Solver(Board initState)`, finds a solution to an intial 8 puzzle board state using A Star
 
 Nested Class `State`:
+
 - State class makes the cost calculations and board attributes simple to store
 - `public int compareTo(State s)`, returns the cost difference between self and a given state
 
 Methods:
+
 - `private State root(State state)`, returns the root state of a given state
 - `boolean isSolvable()`, returns false if the board is determined to be unsolvable
 - `Iterable<Board> solution()`, returns the sequence of boards in a shortest solution, returns null if unsolvable
