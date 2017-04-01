@@ -97,6 +97,8 @@ public class Solver {
         pq.add(root);
         while (!pq.isEmpty()) {
             State s = pq.poll();
+            System.out.println(s.cost);
+            s.board.printBoard();
             if (s.board.isGoal()) {
                 // Add all boards to solution set
                 solution.add(s.board);
