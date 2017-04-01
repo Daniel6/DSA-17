@@ -100,20 +100,6 @@ public class Board {
                 }
             }
 
-            if (r > 0) {
-                // Try shifting up
-                // Deep copy game state
-                int[][] altTiles = copyOf(tiles);
-
-                int t = altTiles[r - 1][c];
-                altTiles[r - 1][c] = altTiles[r][c];
-                altTiles[r][c] = t;
-                Board altBoard = new Board(altTiles);
-                if (altBoard.solvable()) {
-                    neighbors.add(altBoard);
-                }
-            }
-
             if (r < tiles.length - 1) {
                 // Try shifting down
                 Board b = shiftAndCopy(this, r, c, 1, 0);
