@@ -43,5 +43,11 @@ public class JustificationTest {
         assertThat(TextJustification.justifyText(w, m), is(soln));
     }
 
-    // TODO: add more test cases here
+    @Test
+    public void testSingleWordLines() {
+        List<Integer> soln = Arrays.asList(0, 1, 2, 3, 4, 5);
+        int m = 5;
+        String[] w = {"abcd", "abc", "abcde", "ab", "abcd", "abc"};
+        assertThat(TextJustification.justifyText(w, m), is(soln));
+    }
 }

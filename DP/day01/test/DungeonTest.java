@@ -24,6 +24,10 @@ public class DungeonTest {
         assertThat(DungeonGame.minInitialHealth(map), is(44));
     }
     
-    // TODO: Add more test cases here
+    @Test
+    public void testNoDungeon() {
+        int[][] map = {{},{},{},{}};
+        assertThat(DungeonGame.minInitialHealth(map), is(-1));
+    }
 
 }
