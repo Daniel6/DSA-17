@@ -1,61 +1,62 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class TextJustification {
 
+    private static int[] memos;
+
     public static List<Integer> justifyText(String[] w, int m) {
-        List<Integer> solution = new ArrayList<Integer>();
-        // Spaces needed if words from i to j are in a line
-        int[][] spaces = new int[w.length+1][w.length+1];
-        // Cost of a line made up of words from i to j
-        int[][] costs = new int[w.length+1][w.length+1];
-        // Lowest possible cost for arrangement of words up to i
-        int[] solns = new int[w.length+1];
-        int[] splits = new int[w.length+1];
-
-        for (int i = 1; i <= w.length; i++) {
-            spaces[i][i] = m - w[i-1].length();
-            for (int j = i+1; j <= w.length; j++) {
-                spaces[i][j] = spaces[i][j-1] - w[j-1].length() - 1;
-            }
+        memos = new int[w.length];
+        for (int i = 0; i < w.length; i++) {
+            memos[i] = Integer.MAX_VALUE;
         }
+        helper(w, 0, m, 0);
 
-        for (int i = 1; i <= w.length; i++) {
-            for (int j = i; j <= w.length; j++) {
-                if (spaces[i][j] < 0) {
-                    costs[i][j] = Integer.MAX_VALUE;
-                } else if (j == w.length && spaces[i][j] > 0) {
-                    costs[i][j] = 0;
-                } else {
-                    costs[i][j] = (int) Math.pow(spaces[i][j], 2);
-                }
-            }
-        }
+        System.out.println(Arrays.toString(memos));
+        List<Integer> soln = new ArrayList<Integer>();
 
-        solns[0] = 0;
-        for (int j = 1; j <= w.length; j++) {
-            solns[j] = Integer.MAX_VALUE;
-            for (int i = 1; i <= j; i++) {
-                if (solns[i-1] != Integer.MAX_VALUE && costs[i][j] != Integer.MAX_VALUE && (solns[i-1] + costs[i][j] < solns[j])) {
-                    solns[j] = solns[i-1] + costs[i][j];
-                    splits[j] = i;
-                }
-            }
-        }
-
-        helper(splits, splits.length-1, solution);
-
-        return solution;
+        return soln;
     }
 
-    private static int helper(int[] p, int n, List<Integer> solution) {
-        int k;
-        if (p[n] == 1) {
-            k = 1;
-        } else {
-            k = helper(p, p[n] - 1, solution) + 1;
+    private static int helper(String[] words, int wordsProcessed, int lineLength, int oldCost) {
+        if (wordsProcessed == words.length) {
+            memos[wordsProcessed - 1] = oldCost;
+            return oldCost;
         }
-        solution.add(p[n] - 1);
-        return k;
+        if (memos[wordsProcessed] < oldCost) {
+            return memos[wordsProcessed];
+        }
+
+
+        for (int i = wordsProcessed; i < words.length; i++) {
+            int cost = cost(words, wordsProcessed, i, lineLength);
+            if (cost >= 0) {
+                int soln = helper(words, i+1, lineLength, cost + oldCost);
+                if (soln < memos[wordsProcessed]) memos[wordsProcessed] = soln;
+            } else {
+                break;
+            }
+        }
+
+        return memos[wordsProcessed];
+    }
+
+    private static int cost(String[] words, int i, int j, int lineLength) {
+        int sum = 0;
+        for (int k = i; k <= j; k++) {
+            sum += words[k].length();
+        }
+        sum += j-i;
+        return (int) Math.pow(lineLength - sum, 3);
+    }
+
+    private static class Solution {
+        public static int cost;
+        public static List<Integer> breaks;
+        public Solution(int cost, List<Integer> breaks) {
+            this.cost = cost;
+            this.breaks = breaks;
+        }
     }
 }
