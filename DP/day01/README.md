@@ -1,5 +1,7 @@
 # Dynamic Programming - Day01
 
+**Updated: This assignment is due on Thurs, April 20**
+
 ## Resources
 
 The MIT lecture series covers both the text-justification and matrix-parenthesization problems we covered today in class: [MIT DP lecture 2](https://youtu.be/ENyox7kNKeY). We recommend at some point watching through the entire 4-video series, but the text-justification starts at [17:04](https://youtu.be/ENyox7kNKeY?t=17m4s) The corresponding lecture notes are in the course google drive.
