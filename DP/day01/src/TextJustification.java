@@ -11,7 +11,7 @@ public class TextJustification {
         for (int i = 0; i < w.length; i++) {
             memos[i] = Integer.MAX_VALUE;
         }
-        helper(w, 0, m, 0);
+        helper(w, 0, m, 0, new ArrayList<>());
 
         System.out.println(Arrays.toString(memos));
         List<Integer> soln = new ArrayList<Integer>();
@@ -19,7 +19,7 @@ public class TextJustification {
         return soln;
     }
 
-    private static int helper(String[] words, int wordsProcessed, int lineLength, int oldCost) {
+    private static int helper(String[] words, int wordsProcessed, int lineLength, int oldCost, List<Integer> breaks) {
         if (wordsProcessed == words.length) {
             memos[wordsProcessed - 1] = oldCost;
             return oldCost;
@@ -32,7 +32,13 @@ public class TextJustification {
         for (int i = wordsProcessed; i < words.length; i++) {
             int cost = cost(words, wordsProcessed, i, lineLength);
             if (cost >= 0) {
-                int soln = helper(words, i+1, lineLength, cost + oldCost);
+                List<Integer> newBreaks = new ArrayList<>();
+                for (int b : breaks) {
+                    newBreaks.add(b);
+                }
+                newBreaks.add(i+1);
+
+                int soln = helper(words, i+1, lineLength, cost + oldCost, newBreaks);
                 if (soln < memos[wordsProcessed]) memos[wordsProcessed] = soln;
             } else {
                 break;
