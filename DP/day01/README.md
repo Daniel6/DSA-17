@@ -1,6 +1,6 @@
 # Dynamic Programming - Day01
 
-**Updated: This assignment is due on Thurs, April 20**
+**Updated: This assignment is due on Fri, April 21**
 
 ## Resources
 

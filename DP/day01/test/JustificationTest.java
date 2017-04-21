@@ -34,7 +34,7 @@ public class JustificationTest {
         cost2 += cost(words, other.get(other.size()-1), words.length, m);
         if (cost1 != cost2)
             System.out.println("Expected cost: " + cost1 + ". Actual cost: " + cost2);
-        assertThat(cost1, is(cost2));
+        assertThat(cost2, is(cost1));
     }
 
     @Test
