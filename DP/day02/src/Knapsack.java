@@ -20,23 +20,18 @@ public class Knapsack {
     }
 
     private static int helper(int i, int totalValue, int totalSpace, int[] S, int[] V, int knapsackSize, int[][] memos) {
-        if (i >= S.length) {
-            return totalValue;
-        }
+        if (totalSpace > knapsackSize) return -1;
+        if (i >= S.length) return totalValue;
 
         if (totalSpace == knapsackSize) {
             memos[i][totalSpace] = totalValue;
             return totalValue;
-        } else if (totalSpace > knapsackSize) {
-            return -1;
         }
 
         if (memos[i][totalSpace] == -1) {
-            if (totalSpace + S[i] <= knapsackSize) {
-                memos[i][totalSpace] = Math.max(
-                    memos[i][totalSpace],
-                    helper(i+1, totalValue + V[i], totalSpace + S[i], S, V, knapsackSize, memos));
-            }
+            memos[i][totalSpace] = Math.max(
+                memos[i][totalSpace],
+                helper(i+1, totalValue + V[i], totalSpace + S[i], S, V, knapsackSize, memos));
             memos[i][totalSpace] = Math.max(
                 memos[i][totalSpace],
                 helper(i+1, totalValue, totalSpace, S, V, knapsackSize, memos)

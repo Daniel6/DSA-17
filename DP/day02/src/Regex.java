@@ -1,13 +1,11 @@
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
 import java.util.HashMap;
-import java.util.List;
 
 public class Regex {
 
     public static boolean isMatch(String s, String p) {
         MyFSM fsm = new MyFSM(p);
+        System.out.println(p + " match: " + s);
         return fsm.matchString(s);
     }
 
@@ -23,16 +21,23 @@ public class Regex {
 
             char c;
             char prev = '\0';
+            boolean wildcardCharCase = false;
             while (i < regex.length()) {
                 c = regex.charAt(i);
                 if (c == '*') {
                     // 0 or more of previous char
                     currNode = prevNode;
                     currNode.setCircularRedirect(String.valueOf(prev));
+                    if (prev == '.') wildcardCharCase = true;
                 } else {
                     // Char is a letter in the alphabet or a period
                     FSMNode newNode = new FSMNode();
                     currNode.setRedirect(String.valueOf(c), newNode);
+                    if (wildcardCharCase) {
+                        newNode.setCircularRedirect(String.valueOf(c));
+                        newNode.setRedirect(String.valueOf('.'), currNode);
+                        wildcardCharCase = false;
+                    }
                     prevNode = currNode;
                     currNode = newNode;
                 }
